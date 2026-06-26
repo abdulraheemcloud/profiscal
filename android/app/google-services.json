@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "279128342664",
+    "project_id": "profiscal-app",
+    "storage_bucket": "profiscal-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:279128342664:android:2e6173f30accb188b19f3d",
+        "android_client_info": {
+          "package_name": "com.example.profiscal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgVdv85n6OgXT91w8u6uL6wTHgXN9K-zk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
