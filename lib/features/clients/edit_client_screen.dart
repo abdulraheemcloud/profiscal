@@ -53,7 +53,9 @@ class _EditClientScreenState extends State<EditClientScreen> {
         TextEditingController(text: widget.client.address);
 
     monthlyFeeController =
-        TextEditingController(text: widget.client.monthlyFee.toString());
+        TextEditingController(
+          text: widget.client.monthlyFee.toString(),
+        );
   }
 
   @override
@@ -75,58 +77,84 @@ class _EditClientScreenState extends State<EditClientScreen> {
       isLoading = true;
     });
 
-    final updatedClient = ClientModel(
-      id: widget.client.id,
-      businessName: businessNameController.text.trim(),
-      clientName: clientNameController.text.trim(),
-      mobile: mobileController.text.trim(),
-      email: emailController.text.trim(),
-      gstNumber: gstController.text.trim(),
-      address: addressController.text.trim(),
-      monthlyFee:
-          double.tryParse(monthlyFeeController.text.trim()) ?? 0,
-    );
+    try {
+      final updatedClient = ClientModel(
+        id: widget.client.id,
+        businessName: businessNameController.text.trim(),
+        clientName: clientNameController.text.trim(),
+        mobile: mobileController.text.trim(),
+        email: emailController.text.trim(),
+        gstNumber: gstController.text.trim(),
+        address: addressController.text.trim(),
+        monthlyFee:
+            double.tryParse(
+                  monthlyFeeController.text.trim(),
+                ) ??
+                0,
+      );
 
-    await firestoreService.updateClient(updatedClient);
+      await firestoreService.updateClient(updatedClient);
 
-    if (!mounted) return;
+      if (!mounted) return;
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text("Client updated successfully"),
-      ),
-    );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            "Client updated successfully",
+          ),
+        ),
+      );
 
-    Navigator.pop(context, true);
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text("Error: $e"),
+        ),
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          isLoading = false;
+        });
+      }
+    }
   }
 
   Widget buildField({
     required TextEditingController controller,
     required String label,
-    TextInputType keyboardType = TextInputType.text,
+    TextInputType keyboardType =
+        TextInputType.text,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(
+        bottom: 16,
+      ),
       child: TextFormField(
         controller: controller,
         keyboardType: keyboardType,
         validator: (value) {
-          if (value == null || value.trim().isEmpty) {
+          if (value == null ||
+              value.trim().isEmpty) {
             return "Required";
           }
+
           return null;
         },
         decoration: InputDecoration(
           labelText: label,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius:
+                BorderRadius.circular(12),
           ),
         ),
       ),
     );
   }
-
-  @override
+    @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -138,7 +166,6 @@ class _EditClientScreenState extends State<EditClientScreen> {
           key: _formKey,
           child: Column(
             children: [
-
               buildField(
                 controller: businessNameController,
                 label: "Business Name",
@@ -185,7 +212,14 @@ class _EditClientScreenState extends State<EditClientScreen> {
                 child: ElevatedButton(
                   onPressed: isLoading ? null : updateClient,
                   child: isLoading
-                      ? const CircularProgressIndicator()
+                      ? const SizedBox(
+                          width: 24,
+                          height: 24,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
                       : const Text("Update Client"),
                 ),
               ),
